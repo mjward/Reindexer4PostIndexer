@@ -1,0 +1,45 @@
+#reindexer {
+  max-width: 775px;
+}
+
+#reindexer table .column-last_indexed, #reindexer table .column-indexed_items{
+  text-align: center;
+}
+
+#reindexer #form-actions{
+  margin-top: 10px;
+}
+
+
+#reindexer #reindex-notifications{
+  height: 25px;
+  margin-top: 10px;
+}
+
+
+#reindexer #reindex-status{
+  display: none;
+  color: #777777;
+  margin-top: 7px;
+  font-style: italic;
+}
+
+#reindexer #reindex-log{
+	display: none;
+	border-top: 1px solid #ccc;
+	margin-top: 20px;
+	color: #464646;
+}
+
+#reindexer #reindex-log h3{
+	font-weight: normal;
+}
+
+#reindexer #reindex-log .icon{
+	display: inline-block;
+    width: 20px;
+}
+
+#reindexer #reindex-log .summary{
+	
+}

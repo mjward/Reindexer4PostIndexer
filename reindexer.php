@@ -10,33 +10,44 @@ Author URI: http://redbak.net.au
 
 
 /**
- * Instantiate class
+ * Define Globals
+ *
+ * @since 1.0
+ */
+define( 'ERI_VERSION', '1.0' );
+define( 'ERI_PLUGIN_DIR', WP_PLUGIN_DIR.'/'.dirname( plugin_basename( __FILE__ ) ) );
+define( 'ERI_PLUGIN_URL', WP_PLUGIN_URL.'/'.dirname( plugin_basename( __FILE__ ) ) );
+
+
+/**
+ * required files
+ *
+ * @since 1.0
+ */
+require_once('lib/admin.php');
+require_once('helpers/functions.php');
+
+/**
+ * Instantiate classes
  *
  * @since 1.0
  */
 $reindexer = new Envato_Reindexer();
 
+
 /**
- * Required filter & action calls
+ * Required add_action() calls
+ *
+ * @uses add_action()
  *
  * @since 1.0
  */
-//add_filter('the_content', array( $tuts_ads, 'tuts_ads_process' ) );
+add_action( 'init', array( $reindexer, 'request_handler' ), 10 );
 add_action( 'network_admin_menu', array( $reindexer, 'env_reindexer_menu' ) );
+add_action( 'wp_ajax_reindex_blog', array( $reindexer, 'env_ajax_reindex_request' ));
+add_action( 'wp_ajax_blog_info_request', array( $reindexer, 'env_ajax_blog_info_request' ));
+add_action( 'wp_ajax_init_reindex', array( $reindexer, 'env_ajax_init_reindex' ));
+register_activation_hook(__FILE__, array( $reindexer, 'env_reindexer_install'));
 
-class Envato_Reindexer {
 
-	function env_reindexer_menu() {
-		add_menu_page('Reindexer', 'Envato', 'manage_options', 'myplugin/myplugin-index.php', array($this, 'env_reindexer_options'),   plugins_url('reindexer/images/icon.png'));
-	}
-
-	function env_reindexer_options() {
-		if ( !current_user_can( 'manage_options' ) )  {
-			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
-		}
-		echo '<div class="wrap">';
-		echo '<p>Here is where the form would go if I actually had options.</p>';
-		echo '</div>';
-	}
-}
 ?>
