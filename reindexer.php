@@ -50,4 +50,6 @@ add_action( 'wp_ajax_init_reindex', array( $reindexer, 'env_ajax_init_reindex' )
 register_activation_hook(__FILE__, array( $reindexer, 'env_reindexer_install'));
 
 
+
+
 ?>

@@ -66,7 +66,7 @@ class ENV_Blog_List_Table extends WP_List_Table {
     function column_last_indexed($item){
         //Return the title contents
         return sprintf('%1$s <span style="color:silver"></span>',
-            /*$1%s*/ (!is_null($item->last_updated)) ? $item->last_updated : 'never'
+            /*$1%s*/ (!is_null($item->last_indexed)) ? $item->last_indexed : 'never'
         );
     }
 
@@ -97,7 +97,7 @@ class ENV_Blog_List_Table extends WP_List_Table {
             <div class="tablenav <?php echo esc_attr( $which ); ?>">
 
                 <div id='reindex-status' class="alignleft actions">
-                    <strong>Status:</strong> <span> wow this is running now</span>
+                    <strong>Status:</strong> <span></span>
                 </div>
         <?php
                 $this->extra_tablenav( $which );
@@ -167,11 +167,10 @@ class ENV_Blog_List_Table extends WP_List_Table {
         
         $this->_column_headers = array($columns, $hidden, $sortable);
         
-        $data = $wpdb->get_results( $wpdb->prepare( "  SELECT b.blog_id, b.domain, ih.last_indexed, ih.indexed_items 
-                                                        FROM wp_blogs b
-                                                        LEFT JOIN wp_site_index_history ih ON b.blog_id = ih.blog_id
-                                                        ORDER BY b.blog_id") );
-        
+        $data = $wpdb->get_results("  SELECT b.blog_id, b.domain, DATE_FORMAT(ih.last_indexed, '%Y-%m-%d %H:%i') as last_indexed, ih.indexed_items 
+                                      FROM wp_blogs b
+                                      LEFT JOIN wp_site_index_history ih ON b.blog_id = ih.blog_id
+                                      ORDER BY b.blog_id" );
         
         foreach($data as &$blog){
             $blog->blog_name = get_blog_details( $blog->blog_id, true )->blogname;

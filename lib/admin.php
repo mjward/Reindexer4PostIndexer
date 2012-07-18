@@ -62,6 +62,7 @@ class Envato_Reindexer {
  		
 		wp_enqueue_script('eri-js', ERI_PLUGIN_URL.'/assets/js/scripts.js', array('jquery'), false);
 		wp_enqueue_script('noty-js', ERI_PLUGIN_URL.'/assets/js/jquery.noty.js', array('jquery'), false);
+      wp_enqueue_script('asyncqueue-js', ERI_PLUGIN_URL.'/assets/js/jquery.asyncqueue.js', array('jquery'), false);
 	}
 
  /**
@@ -200,8 +201,10 @@ class Envato_Reindexer {
    * @return Array representative of the outcome of the reindex
    */
 	function env_reindex_blog($blog_id){
-
+      global $wpdb;
 		if( switch_to_blog($blog_id, true) ){
+
+         $failed_posts = array();
 
 			$args = array( 'numberposts' => 99999, 'post_type' => 'post' );
 			$posts = get_posts( $args );
@@ -209,14 +212,28 @@ class Envato_Reindexer {
 
 			foreach($posts as $p){
 				$args = array( 'ID' => $p->ID );
-				wp_update_post( $args );
+				if(!$post_id = wp_update_post( $args )){
+               $failed_posts[] = $p->ID;
+            };
+
 				wp_cache_flush();
 			}
 
 			restore_current_blog();
 			
+         $last_indexed = date('Y-m-d H:i');
+
 			$data['status'] = 'success';
 			$data['posts'] = count($posts);
+         $data['timestamp'] = $last_indexed;
+
+         if(!empty($failed_posts)){
+            $data['failed_posts'] = $failed_posts;
+         }
+
+         $record = array();
+         $wpdb->query("INSERT INTO {$wpdb->prefix}site_index_history (blog_id, indexed_items, last_indexed) VALUES({$blog_id}, {$data['posts']}, '$last_indexed') 
+                       ON DUPLICATE KEY UPDATE blog_id=VALUES(blog_id), indexed_items=VALUES(indexed_items),last_indexed=VALUES(last_indexed)" );
 
 		} else {
 			$data['status'] = 'fail';
@@ -247,8 +264,7 @@ class Envato_Reindexer {
       $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}term_counts");
 
       $blogs = $wpdb->get_results("SELECT blog_id, domain 
-                                   FROM {$wpdb->prefix}blogs
-                                    WHERE blog_id IN (1,2)");
+                                   FROM {$wpdb->prefix}blogs");
 
       foreach($blogs as &$blog){
          $data = get_blog_details( $blog->blog_id, true );
@@ -277,6 +293,14 @@ class Envato_Reindexer {
 	function env_reindexer_install(){
 
 		global $wpdb;
+
+      if( !is_multisite() ) { 
+         exit("This plugin requires a Wordpress Multisite enabled installation"); 
+      }
+
+      if( !is_plugin_active_for_network('post-indexer/post-indexer.php') ){
+         exit("This plugin relys on the WPMU-DEV Post Indexer Plugin. Ensure this is installed and activated before attempting to activate the reindexer"); 
+      }
 
 		$table_name = $wpdb->prefix . 'site_index_history';
 
@@ -307,7 +331,6 @@ class Envato_Reindexer {
   function request_handler() {
 
   	if ( isset($_POST[ 'execute_reindex' ]) && $_POST[ 'execute_reindex' ] == 'doit' ) {
-print_r($_POST);
 
       // Check Referer
       check_admin_referer( 'env_reindexer');

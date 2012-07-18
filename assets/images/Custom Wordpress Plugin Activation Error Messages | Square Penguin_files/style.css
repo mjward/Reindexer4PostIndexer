@@ -1,0 +1,25 @@
+/*
+Theme Name: MyTwentyEleven
+Theme URI: Your URL
+Description: My own Twenty Eleven copy
+Author: Your name
+Template: twentyeleven
+*/
+
+@import url('../twentyeleven/style.css');
+
+#page {
+	margin-top:1em;
+}
+
+#site-title {
+	padding-top:1em;
+}
+
+#site-description {
+	margin-bottom:1em;
+}
+
+#branding #searchform {
+	top:1.5em;
+}
