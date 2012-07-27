@@ -298,7 +298,7 @@ class Envato_Reindexer {
          exit("This plugin requires a Wordpress Multisite enabled installation"); 
       }
 
-      if( !is_plugin_active_for_network('post-indexer/post-indexer.php') ){
+      if( !is_plugin_active_for_network('wp-post-reindexer/post-indexer.php') ){
          exit("This plugin relys on the WPMU-DEV Post Indexer Plugin. Ensure this is installed and activated before attempting to activate the reindexer"); 
       }
 
