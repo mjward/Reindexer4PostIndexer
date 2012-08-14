@@ -206,15 +206,16 @@ class Envato_Reindexer {
 
          $failed_posts = array();
 
-			$args = array( 'numberposts' => 99999, 'post_type' => 'post' );
+			$args = array( 'numberposts' => 99999, 'post_type' => 'post', 'orderby' => 'ID', 'order' => 'DESC' );
 			$posts = get_posts( $args );
+
 			wp_cache_flush();
 
 			foreach($posts as $p){
 				$args = array( 'ID' => $p->ID );
-				if(!$post_id = wp_update_post( $args )){
-               $failed_posts[] = $p->ID;
-            };
+				///if(!$post_id = wp_update_post( $args )){
+            //};
+            wp_update_post( $args );
 
 				wp_cache_flush();
 			}
