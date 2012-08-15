@@ -170,7 +170,8 @@ class ENV_Blog_List_Table extends WP_List_Table {
         $data = $wpdb->get_results("  SELECT b.blog_id, b.domain, DATE_FORMAT(ih.last_indexed, '%Y-%m-%d %H:%i') as last_indexed, ih.indexed_items 
                                       FROM wp_blogs b
                                       LEFT JOIN wp_site_index_history ih ON b.blog_id = ih.blog_id
-                                      ORDER BY b.blog_id" );
+                                      GROUP BY b.blog_id
+                                      ORDER BY b.blog_id, ih.last_indexed DESC" );
         
         foreach($data as &$blog){
             $blog->blog_name = get_blog_details( $blog->blog_id, true )->blogname;
