@@ -31,7 +31,7 @@ class Envato_Reindexer {
    * @return void
    */
 	function env_reindexer_menu() {
-		$env_reindexer_admin_page = add_menu_page('Reindexer', 'Post Reindexer', 'manage_options', 'env_reindexer', array($this, 'env_reindexer_options'),   plugins_url('reindexer/assets/images/icon.png'));
+		$env_reindexer_admin_page = add_menu_page('Reindexer', 'Post Reindexer', 'manage_options', 'env_reindexer', array($this, 'env_reindexer_options'), ERI_PLUGIN_URL.'reindexer/assets/images/icon.png');
 
 		// Add Menu Items
     	add_action("admin_print_styles-$env_reindexer_admin_page", array( $this, 'env_reindexer_admin_load' ) );
