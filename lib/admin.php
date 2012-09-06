@@ -265,7 +265,8 @@ class Envato_Reindexer {
       $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}term_counts");
 
       $blogs = $wpdb->get_results("SELECT blog_id, domain 
-                                   FROM {$wpdb->prefix}blogs");
+                                   FROM {$wpdb->prefix}blogs
+                                   ORDER BY blog_id ASC");
 
       foreach($blogs as &$blog){
          $data = get_blog_details( $blog->blog_id, true );

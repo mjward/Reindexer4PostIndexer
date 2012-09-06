@@ -277,11 +277,11 @@ function post_indexer_post_insert_update($tmp_post_ID){
 
 		$post_author_display_name = $wpdb->get_var("SELECT display_name FROM " . $wpdb->base_prefix . "users WHERE ID = '" . $tmp_post->post_author . "'");
 
-		if($featured_image) {
-		    $pattern = '/\/wp_content\/blogs.dir\/\d/';
-		    $replacement = '';
-	    	$featured_image = preg_replace($pattern, $replacement, $featured_image);
-    	}
+		//if($featured_image) {
+		//    $pattern = '/\/wp_content\/blogs.dir\/\d/';
+		//    $replacement = '';
+	    //	$featured_image = preg_replace($pattern, $replacement, $featured_image);
+    	//}
 
 		//delete post
 		post_indexer_delete($tmp_post_ID);
