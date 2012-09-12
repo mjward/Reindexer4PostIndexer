@@ -288,12 +288,23 @@ function post_indexer_post_insert_update($tmp_post_ID){
 		//get post terms
 		$object_ids = array($tmp_post_ID);
 		$taxonomies = array('category', 'post_tag');
+
 		$tmp_terms = wp_get_object_terms($object_ids, $taxonomies, '');
+
+
+		$excluded_terms = array(39, 348, 765, 485);
 
 		$tmp_post_terms = '|';
 		foreach ($tmp_terms as $tmp_term) {
+			if(in_array($tmp_term, $excluded_terms)){
+				return false;
+			}
 			$tmp_post_terms = $tmp_post_terms . $tmp_term->term_id . '|';
 		}
+
+		//print_r($tmp_terms);
+		//echo $tmp_post_terms;
+		//exit;
 		//get sort terms
 		$tmp_sort_terms = post_indexer_get_sort_terms($wpdb->blogid);
 		//post does not exist - insert site post
